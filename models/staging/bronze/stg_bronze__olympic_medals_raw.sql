@@ -9,6 +9,7 @@ source as (
 renamed as (
 
     select
+        
         slug_game as id_juego,
         athlete_url as url_atleta,
         discipline_title as disciplina,
@@ -30,5 +31,5 @@ renamed as (
     from source
 
 )
-
+-- {{ dbt_utils.generate_surrogate_key(['field_a', 'field_b']) }} as surrogate_key
 select * from renamed
