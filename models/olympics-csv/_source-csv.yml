@@ -11,182 +11,179 @@ sources:
         columns:
           - name: athlete_url
             description: "URL del perfil del atleta en Olympics.com."
-            data_type: varchar
             tests:
               - not_null
 
           - name: athlete_full_name
             description: "Nombre completo del atleta."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: games_participations
             description: "Número de participaciones del atleta en Juegos Olímpicos."
-            data_type: varchar
 
           - name: first_game
             description: "Primer juego olímpico en el que participó el atleta."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: athlete_year_birth
             description: "Año de nacimiento del atleta."
-            data_type: varchar
 
           - name: athlete_medals
             description: "Resumen raw de medallas del atleta."
-            data_type: varchar
 
           - name: bio
             description: "Biografía o texto descriptivo del atleta."
-            data_type: varchar
 
       - name: olympic_hosts_raw
-        description: "Tabla raw de sedes y ediciones olímpicas cargada desde el archivo olympic_hosts-2.csv."
+        description: "Tabla raw de sedes y ediciones olímpicas cargada desde el archivo olympic_hosts.csv."
         columns:
           - name: game_slug
             description: "Identificador único del juego olímpico."
-            data_type: varchar
             tests:
               - not_null
               - unique
 
           - name: game_end_date
             description: "Fecha de finalización del evento olímpico."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: game_start_date
             description: "Fecha de inicio del evento olímpico."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: game_location
             description: "País o localización anfitriona."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: game_name
             description: "Nombre legible del evento olímpico."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: game_season
             description: "Temporada del juego olímpico, Summer o Winter."
-            data_type: varchar
+            tests:
+              - not_null
+              - accepted_values:
+                  values: ['Summer', 'Winter']
 
           - name: game_year
             description: "Año del juego olímpico."
-            data_type: varchar
+            tests:
+              - not_null
 
       - name: olympic_medals_raw
-        description: "Tabla raw de medallas olímpicas cargada desde el archivo olympic_medals-3.csv."
+        description: "Tabla raw de medallas olímpicas cargada desde el archivo olympic_medals.csv."
         columns:
           - name: discipline_title
             description: "Nombre de la disciplina deportiva."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: slug_game
             description: "Identificador del juego olímpico."
-            data_type: varchar
             tests:
               - not_null
 
           - name: event_title
             description: "Nombre de la prueba o evento."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: event_gender
             description: "Género del evento."
-            data_type: varchar
 
           - name: medal_type
             description: "Tipo de medalla, GOLD, SILVER o BRONZE."
-            data_type: varchar
+            tests:
+              - accepted_values:
+                  values: ['GOLD', 'SILVER', 'BRONZE']
 
           - name: participant_type
             description: "Tipo de participante, por ejemplo Athlete o GameTeam."
-            data_type: varchar
+            tests:
+              - accepted_values:
+                  values: ['Athlete', 'GameTeam']
 
-          - name: participant_tittle 
+          - name: participant_title
             description: "Nombre o título del participante o equipo."
-            data_type: varchar
 
           - name: athlete_url
             description: "URL del perfil del atleta cuando aplica."
-            data_type: varchar
 
           - name: athlete_full_name
             description: "Nombre completo del atleta cuando aplica."
-            data_type: varchar
 
           - name: country_name
             description: "Nombre del país asociado al resultado."
-            data_type: varchar
 
           - name: country_code
             description: "Código de país de dos letras."
-            data_type: varchar
 
           - name: country_3_letter_code
             description: "Código IOC o código de país de tres letras."
-            data_type: varchar
 
       - name: olympic_results_raw
-        description: "Tabla raw de resultados olímpicos cargada desde el archivo olympic_results-4.csv."
+        description: "Tabla raw de resultados olímpicos cargada desde el archivo olympic_results.csv."
         columns:
           - name: discipline_title
             description: "Nombre de la disciplina deportiva."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: event_title
             description: "Nombre de la prueba o evento."
-            data_type: varchar
+            tests:
+              - not_null
 
           - name: slug_game
             description: "Identificador del juego olímpico."
-            data_type: varchar
             tests:
               - not_null
 
           - name: participant_type
             description: "Tipo de participante, por ejemplo Athlete o GameTeam."
-            data_type: varchar
+            tests:
+              - accepted_values:
+                  values: ['Athlete', 'GameTeam']
 
           - name: medal_type
             description: "Tipo de medalla si existe."
-            data_type: varchar
+            tests:
+              - accepted_values:
+                  values: ['GOLD', 'SILVER', 'BRONZE']
 
           - name: athletes
             description: "Lista raw de atletas en formato texto para eventos por equipos o dobles."
-            data_type: varchar
 
           - name: rank_equal
             description: "Indicador de empate en la clasificación."
-            data_type: varchar
 
           - name: rank_position
             description: "Posición o ranking del participante en el evento."
-            data_type: varchar
 
           - name: country_name
             description: "Nombre del país asociado al resultado."
-            data_type: varchar
 
           - name: country_code
             description: "Código de país de dos letras."
-            data_type: varchar
 
           - name: country_3_letter_code
             description: "Código IOC o código de país de tres letras."
-            data_type: varchar
 
           - name: athlete_url
             description: "URL del perfil del atleta cuando el resultado es individual."
-            data_type: varchar
 
           - name: athlete_full_name
             description: "Nombre completo del atleta cuando el resultado es individual."
-            data_type: varchar
 
           - name: value_unit
             description: "Unidad de medida del resultado, por ejemplo POINTS."
-            data_type: varchar
 
           - name: value_type
             description: "Tipo de valor registrado para el resultado."
-            data_type: varchar

@@ -41,7 +41,11 @@ models:
       +materialized: table
 
     staging:
-      bronze:
-        +materialized: table
-        +schema: silver
-        +database: DEV_OLYMPICS_SILVER_DB
+      +materialized: view
+      +schema: silver
+      +database: DEV_OLYMPICS_SILVER_DB
+      
+    marts:
+      +materialized: table
+      +schema: gold
+      +database: DEV_OLYMPICS_GOLD_DB
