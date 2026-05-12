@@ -10,7 +10,7 @@ with results as (
 
     {% if is_incremental() %}
     where cod_juego not in (
-        select distinct game_code
+        select distinct cod_juego
         from {{ this }}
     )
     {% endif %}
@@ -38,13 +38,6 @@ countries as (
 
 ),
 
-disciplines as (
-
-    select *
-    from {{ ref('dim_discipline') }}
-
-),
-
 events as (
 
     select *
@@ -60,17 +53,13 @@ final as (
         g.ciudad as ciudad_juego,
         g.estacion as estacion_juego,
         g.anio as anio_juego,
-        g.fecha_start as fecha_start_jueog,
+        g.fecha_start as fecha_start_juego,
         g.fecha_end as fecha_end_juego,
 
-        r.disciplina as disciplina,
-        d.disciplina as disciplina_dim,
+        e.disciplina as disciplina,
+        e.evento as evento,
+        e.tipo_participante,
 
-        r.evento as evento,
-        e.evento as evento_dim,
-        e.tipo_participante as tipo_participante_evento,
-
-        r.tipo_participante,
         r.tipo_medalla,
         r.atletas,
 
@@ -104,8 +93,6 @@ final as (
         on r.url_atleta = a.url
     left join countries c
         on r.cod_ciudad = c.cod_ciudad
-    left join disciplines d
-        on r.disciplina = d.disciplina
     left join events e
         on r.disciplina = e.disciplina
        and r.evento = e.evento

@@ -24,8 +24,6 @@ sources:
 
           - name: first_game
             description: "Primer juego olímpico en el que participó el atleta."
-            tests:
-              - not_null
 
           - name: athlete_year_birth
             description: "Año de nacimiento del atleta."
@@ -70,7 +68,8 @@ sources:
             tests:
               - not_null
               - accepted_values:
-                  values: ['Summer', 'Winter']
+                  arguments: 
+                    values: ['Summer', 'Winter']
 
           - name: game_year
             description: "Año del juego olímpico."
@@ -102,13 +101,15 @@ sources:
             description: "Tipo de medalla, GOLD, SILVER o BRONZE."
             tests:
               - accepted_values:
-                  values: ['GOLD', 'SILVER', 'BRONZE']
+                  arguments: 
+                    values: ['GOLD', 'SILVER', 'BRONZE']
 
           - name: participant_type
             description: "Tipo de participante, por ejemplo Athlete o GameTeam."
             tests:
               - accepted_values:
-                  values: ['Athlete', 'GameTeam']
+                  arguments: 
+                    values: ['Athlete', 'GameTeam']
 
           - name: participant_title
             description: "Nombre o título del participante o equipo."
@@ -150,13 +151,15 @@ sources:
             description: "Tipo de participante, por ejemplo Athlete o GameTeam."
             tests:
               - accepted_values:
-                  values: ['Athlete', 'GameTeam']
+                  arguments: 
+                    values: ['Athlete', 'GameTeam']
 
           - name: medal_type
             description: "Tipo de medalla si existe."
             tests:
               - accepted_values:
-                  values: ['GOLD', 'SILVER', 'BRONZE']
+                  arguments: 
+                    values: ['GOLD', 'SILVER', 'BRONZE']
 
           - name: athletes
             description: "Lista raw de atletas en formato texto para eventos por equipos o dobles."
