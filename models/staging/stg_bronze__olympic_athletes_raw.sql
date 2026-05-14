@@ -8,17 +8,30 @@ source as (
 
 renamed as (
 
-    select
+    select DISTINCT
         trim(athlete_url) as url,
         trim(athlete_full_name) as nombre,
         try_to_number(games_participations) as juegos_participa,
         trim(first_game) as primer_juego,
         try_to_number(athlete_year_birth) as anio_nac,
         nullif(trim(athlete_medals), '') as medallas,
-        nullif(trim(bio), '') as bio
+        nullif(trim(bio), '') as bio,
+        row_number() over (
+            partition by trim(athlete_url)
+            order by trim(athlete_full_name)
+        ) as rn
 
     from source
 
 )
 
-select * from renamed
+select
+    url,
+    nombre,
+    juegos_participa,
+    primer_juego,
+    anio_nac,
+    medallas,
+    bio
+from renamed
+where rn = 1
