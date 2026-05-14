@@ -1,6 +1,7 @@
 with source as (
 
     select distinct
+        {{ dbt_utils.generate_surrogate_key(['disciplina', 'evento', 'tipo_participante']) }} as id_evento,
         disciplina,
         evento,
         tipo_participante
@@ -12,6 +13,7 @@ with source as (
 final as (
 
     select
+        id_evento,
         disciplina,
         evento,
         tipo_participante

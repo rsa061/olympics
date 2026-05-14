@@ -1,4 +1,4 @@
 select *
 from {{ ref('fct_results') }}
-where medal_type in ('GOLD', 'SILVER', 'BRONZE')
-  and rank_position not in (1, 2, 3)
+where tipo_medalla in ('GOLD', 'SILVER', 'BRONZE')
+  and posicion_ranking not in (1, 2, 3)

@@ -14,10 +14,18 @@ final as (
     select
         cod_ciudad,
         cod_3_letras_ciudad,
-        nombre_ciudad
+        nombre_ciudad,
+        row_number() over (
+            partition by cod_ciudad
+            order by cod_3_letras_ciudad
+        ) as rn
     from source
 
 )
 
-select *
+select 
+    cod_ciudad,
+    cod_3_letras_ciudad,
+    nombre_ciudad
 from final
+where rn = 1
