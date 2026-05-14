@@ -49,4 +49,4 @@ models:
     marts:
       +materialized: table
       +schema: gold
-      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_SILVER_DB"
+      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_GOLD_DB"
