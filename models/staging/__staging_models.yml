@@ -1,0 +1,123 @@
+version: 2
+
+models:
+  - name: stg_bronze__olympic_athletes_raw
+    description: "Modelo staging de atletas olímpicos a partir de la tabla raw."
+    columns:
+      - name: url
+        description: "URL única del atleta en Olympics."
+        tests:
+          - not_null
+          - unique
+
+      - name: nombre
+        description: "Nombre completo del atleta."
+
+      - name: juegos_participa
+        description: "Número de participaciones del atleta en juegos olímpicos."
+
+      - name: primer_juego
+        description: "Primer juego olímpico en el que participó el atleta."
+
+      - name: anio_nac
+        description: "Año de nacimiento del atleta."
+
+      - name: medallas
+        description: "Resumen textual de medallas del atleta, si existe."
+
+      - name: bio
+        description: "Biografía o descripción del atleta."
+
+  - name: stg_bronze__olympic_hosts_raw
+    description: "Modelo staging de sedes o ediciones olímpicas a partir de la tabla raw."
+    columns:
+      - name: cod_juego
+        description: "Código único de la edición olímpica, por ejemplo beijing-2022."
+        tests:
+          - not_null
+          - unique
+
+      - name: fecha_end
+        description: "Fecha y hora de finalización de la edición olímpica."
+
+      - name: fecha_start
+        description: "Fecha y hora de inicio de la edición olímpica."
+
+      - name: ciudad
+        description: "País o localización anfitriona de la edición."
+
+      - name: nombre
+        description: "Nombre visible de la edición olímpica."
+
+      - name: estacion
+        description: "Temporada de los juegos olímpicos."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments:
+                values: ['Summer', 'Winter']
+
+      - name: anio
+        description: "Año de la edición olímpica."
+
+  - name: stg_bronze__olympic_results_raw
+    description: "Modelo staging de resultados olímpicos a partir de la tabla raw."
+    columns:
+      - name: disciplina
+        description: "Nombre de la disciplina deportiva."
+
+      - name: evento
+        description: "Nombre del evento o prueba."
+
+      - name: cod_juego
+        description: "Código de la edición olímpica en la que ocurrió el resultado."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_bronze__olympic_hosts_raw')
+                field: cod_juego
+
+      - name: tipo_participante
+        description: "Tipo de participante del resultado."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['Athlete', 'GameTeam']
+
+      - name: tipo_medalla
+        description: "Tipo de medalla conseguida, si aplica."
+        tests:
+          - accepted_values:
+              arguments:
+                values: ['GOLD', 'SILVER', 'BRONZE']
+
+      - name: atletas
+        description: "Texto con atletas participantes, útil sobre todo en pruebas por equipos."
+
+      - name: ranking_equal
+        description: "Indica si hubo empate en la posición del ranking."
+
+      - name: posicion_ranking
+        description: "Posición obtenida en el resultado."
+
+      - name: nombre_ciudad
+        description: "Nombre del país asociado al resultado. Aunque el alias dice ciudad, en origen corresponde a country_name."
+
+      - name: cod_ciudad
+        description: "Código de país de dos letras asociado al resultado. Aunque el alias dice ciudad, en origen corresponde a country_code."
+
+      - name: cod_3_letras_ciudad
+        description: "Código de país de tres letras asociado al resultado. Aunque el alias dice ciudad, en origen corresponde a country_3_letter_code."
+
+      - name: url_atleta
+        description: "URL del atleta cuando el resultado corresponde a un atleta individual."
+
+      - name: nombre_atleta
+        description: "Nombre del atleta cuando el resultado corresponde a un atleta individual."
+
+      - name: puntuacion_valor
+        description: "Valor numérico o textual del resultado, por ejemplo puntos o tiempo."
+
+      - name: puntuacion_tipo
+        description: "Tipo de unidad del resultado, por ejemplo POINTS."
