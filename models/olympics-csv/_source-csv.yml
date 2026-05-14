@@ -3,7 +3,7 @@ version: 2
 sources:
   - name: bronze
     description: "Fuentes raw cargadas desde CSV en Snowflake para el proyecto Olympic Games."
-    database: DEV_OLYMPICS_BRONZE_DB
+    database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_SILVER_DB"
     schema: BRONZE
     tables:
       - name: olympic_athletes_raw
