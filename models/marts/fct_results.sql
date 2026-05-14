@@ -48,38 +48,18 @@ events as (
 final as (
 
     select
-        r.cod_juego as cod_juego,
-        g.nombre as nombre_juego,
-        g.ciudad as ciudad_juego,
-        g.estacion as estacion_juego,
-        g.anio as anio_juego,
-        g.fecha_start as fecha_start_juego,
-        g.fecha_end as fecha_end_juego,
-
-        e.disciplina as disciplina,
-        e.evento as evento,
-        e.tipo_participante,
+        {{ dbt_utils.generate_surrogate_key(['g.cod_juego', 'e.id_evento', 'c.cod_ciudad']) }} as id_resultado,
+        g.cod_juego as id_juego,
+        e.id_evento as id_evento,
+        a.url as id_atleta,
+        c.cod_ciudad as id_pais,
 
         r.tipo_medalla,
-        r.atletas,
-
-        r.ranking_equal,
-        r.posicion_ranking ,
-
-        r.nombre_ciudad,
-        c.cod_ciudad,
-        c.cod_3_letras_ciudad,
-
-        r.url_atleta,
-        a.nombre as nombre_atleta,
-        a.juegos_participa as juegos_participa_atleta,
-        a.primer_juego as primer_juego_atleta,
-        a.anio_nac as anio_nac_atleta,
-        a.medallas as medallas_atleta,
-        a.bio as bio_atleta,
-
         r.puntuacion_valor,
         r.puntuacion_tipo,
+        r.ranking_equal,
+        r.posicion_ranking,
+        r.atletas,
 
         case
             when r.tipo_medalla is not null then 1
