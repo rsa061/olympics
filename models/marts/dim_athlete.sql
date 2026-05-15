@@ -13,7 +13,9 @@ with source as (
         primer_juego,
         anio_nac,
         medallas,
-        bio
+        bio,
+        _fivetran_deleted,
+        _fivetran_synced
     from {{ ref('stg_bronze__olympic_athletes_raw') }}
 
     {% if is_incremental() %}

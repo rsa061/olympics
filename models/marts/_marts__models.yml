@@ -4,9 +4,13 @@ models:
   - name: fct_results
     description: "Tabla de hechos principal con resultados olímpicos enriquecidos con dimensiones."
     columns:
-      - name: cod_juego
+      - name: id_resultado
         data_type: varchar
-        description: "Clave natural de la edición olímpica."
+        description: "Clave primaria única del resultado (surrogate key compuesta por juego, evento y país)."
+
+      - name: id_juego
+        data_type: varchar
+        description: "Referencia a la edición olímpica desde dim_games."
         tests:
           - not_null
           - relationships:
@@ -14,55 +18,38 @@ models:
                 to: ref('dim_games')
                 field: cod_juego
 
-      - name: nombre_juego
+      - name: id_evento
         data_type: varchar
-        description: "Nombre de la edición olímpica."
-
-      - name: ciudad_juego
-        data_type: varchar
-        description: "Ubicación anfitriona de los juegos."
-
-      - name: estacion_juego
-        data_type: varchar
-        description: "Temporada de los juegos olímpicos."
-        tests:
-          - accepted_values:
-              arguments:
-                values: ['Summer', 'Winter']
-
-      - name: anio_juego
-        data_type: number
-        description: "Año de la edición olímpica."
+        description: "Referencia al evento deportivo desde dim_event."
         tests:
           - not_null
-
-      - name: fecha_start_juego
-        data_type: timestamp_tz
-        description: "Fecha de inicio de la edición olímpica."
-
-      - name: fecha_end_juego
-        data_type: timestamp_tz
-        description: "Fecha de fin de la edición olímpica."
-
-      - name: disciplina
-        data_type: varchar
-        description: "Disciplina deportiva."
-
-      - name: evento
-        data_type: varchar
-        description: "Nombre del evento."
-
-      - name: tipo_participante
-        data_type: varchar
-        description: "Tipo de participante del resultado."
-        tests:
-          - accepted_values:
+          - relationships:
               arguments:
-                values: ['Athlete', 'GameTeam']
+                to: ref('dim_event')
+                field: id_evento
+
+      - name: id_pais
+        data_type: varchar
+        description: "Referencia al país desde dim_country."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_country')
+                field: cod_ciudad
+
+      - name: id_atleta
+        data_type: varchar
+        description: "Referencia al atleta desde dim_athlete."
+        tests:
+          - relationships:
+              arguments:
+                to: ref('dim_athlete')
+                field: url
 
       - name: tipo_medalla
         data_type: varchar
-        description: "Tipo de medalla obtenida."
+        description: "Tipo de medalla obtenida (GOLD, SILVER, BRONZE)."
         tests:
           - accepted_values:
               arguments:
@@ -78,75 +65,323 @@ models:
 
       - name: posicion_ranking
         data_type: number
-        description: "Posición en el ranking."
+        description: "Posición en el ranking del resultado."
         tests:
           - not_null
 
-      - name: nombre_ciudad
+      - name: puntuacion_valor
         data_type: varchar
-        description: "Nombre del país."
+        description: "Valor del resultado (tiempo, distancia, puntos, etc.)."
 
-      - name: cod_ciudad
+      - name: puntuacion_tipo
         data_type: varchar
-        description: "Código de país de dos letras."
+        description: "Unidad o tipo de métrica del resultado (segundos, metros, puntos, etc.)."
+
+      - name: tiene_medalla
+        data_type: number
+        description: "Indicador binario de si el resultado corresponde a medalla (1 = sí, 0 = no)."
         tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+  - name: fct_country_games
+    description: "Tabla de hechos agregada por país y edición olímpica para analizar medallero histórico, evolución de dominio y rendimiento general."
+    columns:
+      - name: id_country_game
+        data_type: varchar
+        description: "Clave única del país en una edición olímpica."
+
+      - name: id_pais
+        data_type: varchar
+        description: "Referencia al país desde dim_country."
+        tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
                 field: cod_ciudad
 
-      - name: cod_3_letras_ciudad
+      - name: id_juego
+        data_type: varchar
+        description: "Referencia a la edición olímpica desde dim_games."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_games')
+                field: cod_juego
+
+      - name: anio
+        data_type: number
+        description: "Año de la edición olímpica."
+
+      - name: estacion
+        data_type: varchar
+        description: "Temporada de los juegos."
+
+      - name: nombre_juego
+        data_type: varchar
+        description: "Nombre de la edición olímpica."
+
+      - name: ciudad
+        data_type: varchar
+        description: "Ciudad sede de los juegos."
+
+      - name: nombre_pais
+        data_type: varchar
+        description: "Nombre del país."
+
+      - name: cod_3_letras_pais
         data_type: varchar
         description: "Código de país de tres letras."
 
-      - name: url_atleta
+      - name: total_results
+        data_type: number
+        description: "Número total de resultados del país en esa edición."
+
+      - name: total_medals
+        data_type: number
+        description: "Total de medallas obtenidas por el país en esa edición."
+
+      - name: gold_medals
+        data_type: number
+        description: "Número de medallas de oro."
+
+      - name: silver_medals
+        data_type: number
+        description: "Número de medallas de plata."
+
+      - name: bronze_medals
+        data_type: number
+        description: "Número de medallas de bronce."
+
+      - name: events_participated
+        data_type: number
+        description: "Número de eventos distintos en los que participó el país."
+
+      - name: events_medaled
+        data_type: number
+        description: "Número de eventos distintos en los que el país ganó medalla."
+
+  - name: fct_country_sport_games
+    description: "Tabla de hechos agregada por país, disciplina y edición para analizar especialización deportiva y diversificación."
+    columns:
+      - name: id_country_sport_game
         data_type: varchar
-        description: "URL del atleta."
+        description: "Clave única del país, disciplina y edición olímpica."
+
+      - name: id_pais
+        data_type: varchar
+        description: "Referencia al país desde dim_country."
         tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_country')
+                field: cod_ciudad
+
+      - name: id_juego
+        data_type: varchar
+        description: "Referencia a la edición olímpica desde dim_games."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_games')
+                field: cod_juego
+
+      - name: disciplina
+        data_type: varchar
+        description: "Disciplina deportiva asociada."
+
+      - name: anio
+        data_type: number
+        description: "Año de la edición olímpica."
+
+      - name: estacion
+        data_type: varchar
+        description: "Temporada de los juegos."
+
+      - name: nombre_juego
+        data_type: varchar
+        description: "Nombre de la edición olímpica."
+
+      - name: nombre_pais
+        data_type: varchar
+        description: "Nombre del país."
+
+      - name: total_results
+        data_type: number
+        description: "Número total de resultados del país en esa disciplina y edición."
+
+      - name: total_medals
+        data_type: number
+        description: "Total de medallas obtenidas en esa disciplina y edición."
+
+      - name: gold_medals
+        data_type: number
+        description: "Número de medallas de oro."
+
+      - name: silver_medals
+        data_type: number
+        description: "Número de medallas de plata."
+
+      - name: bronze_medals
+        data_type: number
+        description: "Número de medallas de bronce."
+
+      - name: events_participated
+        data_type: number
+        description: "Número de eventos distintos disputados en la disciplina."
+
+      - name: medal_events
+        data_type: number
+        description: "Número de eventos distintos en los que se ganó medalla."
+
+  - name: fct_host_country_games
+    description: "Tabla de hechos para analizar el efecto localía, comparando el rendimiento del país anfitrión frente a su histórico."
+    columns:
+      - name: id_host_country_game
+        data_type: varchar
+        description: "Clave única del país anfitrión en una edición olímpica."
+
+      - name: id_pais
+        data_type: varchar
+        description: "Referencia al país desde dim_country."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_country')
+                field: cod_ciudad
+
+      - name: id_juego
+        data_type: varchar
+        description: "Referencia a la edición olímpica desde dim_games."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('dim_games')
+                field: cod_juego
+
+      - name: anio
+        data_type: number
+        description: "Año de la edición olímpica."
+
+      - name: estacion
+        data_type: varchar
+        description: "Temporada de los juegos."
+
+      - name: nombre_juego
+        data_type: varchar
+        description: "Nombre de la edición olímpica."
+
+      - name: nombre_pais
+        data_type: varchar
+        description: "Nombre del país."
+
+      - name: is_host
+        data_type: number
+        description: "Indicador de si el país fue anfitrión en esa edición (1 = sí, 0 = no)."
+        tests:
+          - accepted_values:
+              arguments:
+                values: [0, 1]
+
+      - name: medals_in_games
+        data_type: number
+        description: "Medallas obtenidas por el país en esa edición."
+
+      - name: gold_medals
+        data_type: number
+        description: "Número de medallas de oro."
+
+      - name: silver_medals
+        data_type: number
+        description: "Número de medallas de plata."
+
+      - name: bronze_medals
+        data_type: number
+        description: "Número de medallas de bronce."
+
+      - name: historical_avg_medals
+        data_type: number
+        description: "Promedio histórico de medallas del país antes de esa edición."
+
+      - name: host_delta
+        data_type: number
+        description: "Diferencia entre medallas en casa y la media histórica."
+
+      - name: host_delta_pct
+        data_type: number
+        description: "Diferencia porcentual respecto a la media histórica."
+
+  - name: fct_athlete_career
+    description: "Tabla de hechos agregada por atleta para estudiar trayectoria, longevidad competitiva y medallas acumuladas."
+    columns:
+      - name: id_atleta
+        data_type: varchar
+        description: "Referencia al atleta desde dim_athlete."
+        tests:
+          - not_null
           - relationships:
               arguments:
                 to: ref('dim_athlete')
                 field: url
 
-      - name: nombre_atleta
+      - name: nombre
         data_type: varchar
-        description: "Nombre del atleta."
+        description: "Nombre completo del atleta."
 
-      - name: juegos_participa_atleta
-        data_type: number
-        description: "Número de participaciones olímpicas del atleta."
-
-      - name: primer_juego_atleta
-        data_type: varchar
-        description: "Primer juego olímpico del atleta."
-
-      - name: anio_nac_atleta
+      - name: anio_nac
         data_type: number
         description: "Año de nacimiento del atleta."
 
-      - name: medallas_atleta
-        data_type: varchar
-        description: "Resumen de medallas del atleta."
-
-      - name: bio_atleta
+      - name: bio
         data_type: varchar
         description: "Biografía del atleta."
 
-      - name: puntuacion_valor
+      - name: primer_juego
         data_type: varchar
-        description: "Valor del resultado."
+        description: "Primer juego olímpico del atleta."
 
-      - name: puntuacion_tipo
-        data_type: varchar
-        description: "Tipo de unidad del resultado."
-
-      - name: tiene_medalla
+      - name: games_participated
         data_type: number
-        description: "Indicador de si el resultado corresponde a medalla."
-        tests:
-          - accepted_values:
-              arguments:
-                values: [0, 1]
+        description: "Número total de ediciones olímpicas disputadas."
+
+      - name: first_year
+        data_type: number
+        description: "Año de la primera participación olímpica."
+
+      - name: last_year
+        data_type: number
+        description: "Año de la última participación olímpica."
+
+      - name: career_span_years
+        data_type: number
+        description: "Duración de la carrera olímpica en años."
+
+      - name: total_medals
+        data_type: number
+        description: "Total de medallas acumuladas en toda la carrera."
+
+      - name: gold_medals
+        data_type: number
+        description: "Total de medallas de oro acumuladas."
+
+      - name: silver_medals
+        data_type: number
+        description: "Total de medallas de plata acumuladas."
+
+      - name: bronze_medals
+        data_type: number
+        description: "Total de medallas de bronce acumuladas."
+
+      - name: medals_per_game
+        data_type: number
+        description: "Ratio de medallas por participación olímpica."
 
   - name: dim_athlete
     description: "Dimensión de atletas."

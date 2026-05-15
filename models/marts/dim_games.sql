@@ -12,7 +12,9 @@ with source as (
         estacion,
         anio,
         fecha_start,
-        fecha_end
+        fecha_end,
+        _fivetran_deleted,
+        _fivetran_synced
     from {{ ref('stg_bronze__olympic_hosts_raw') }}
 
     {% if is_incremental() %}
