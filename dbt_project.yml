@@ -38,15 +38,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 
 models:
   olympics_project:
-    olympics-csv:
-      +materialized: table
 
     staging:
       +materialized: view
       +schema: silver
-      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_SILVER_DB"
+      +database: DEV_OLYMPICS_SILVER_DB
       
     marts:
       +materialized: table
       +schema: gold
-      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_GOLD_DB"
+      +database: DEV_OLYMPICS_GOLD_DB
