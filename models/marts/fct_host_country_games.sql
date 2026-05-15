@@ -69,7 +69,5 @@ select
     case
         when ciudad_sede = nombre_pais then 1
         else 0
-    end as is_host,
-    _fivetran_deleted,
-    _fivetran_synced
+    end as is_host
 from with_history

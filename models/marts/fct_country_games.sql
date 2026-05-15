@@ -47,9 +47,7 @@ final as (
         sum(case when r.tipo_medalla = 'BRONZE' then 1 else 0 end) as bronze_medals,
 
         count(distinct r.id_evento) as events_participated,
-        count(distinct case when r.tiene_medalla = 1 then r.id_evento end) as events_medaled,
-        _fivetran_deleted,
-        _fivetran_synced
+        count(distinct case when r.tiene_medalla = 1 then r.id_evento end) as events_medaled
 
     from results r
     left join games g
