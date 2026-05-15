@@ -60,7 +60,9 @@ final as (
         case
             when count(distinct ag.id_juego) = 0 then null
             else sum(case when ag.tiene_medalla = 1 then 1 else 0 end) / count(distinct ag.id_juego)
-        end as medals_per_game
+        end as medals_per_game,
+        _fivetran_deleted,
+        _fivetran_synced
 
     from athlete_games ag
     left join athletes a

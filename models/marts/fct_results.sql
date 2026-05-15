@@ -64,7 +64,9 @@ final as (
         case
             when r.tipo_medalla is not null then 1
             else 0
-        end as tiene_medalla
+        end as tiene_medalla,
+        _fivetran_deleted,
+        _fivetran_synced
 
     from results r
     left join games g
