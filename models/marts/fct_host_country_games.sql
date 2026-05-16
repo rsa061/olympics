@@ -1,7 +1,5 @@
 {{ config(
-    materialized='incremental',
-    incremental_strategy='merge',
-    unique_key='id_host_country_game'
+    materialized='table'
 ) }}
 
 with base as (
@@ -26,9 +24,6 @@ with base as (
         on fr.id_juego = dg.cod_juego
     left join {{ ref('dim_country') }} dc
         on fr.id_pais = dc.cod_ciudad
-    {% if is_incremental() %}
-    where dg.anio >= (select coalesce(max(anio), 0) from {{ this }}) - 1
-    {% endif %}
     group by 1,2,3,4,5,6,7,8
 ),
 

@@ -1,10 +1,10 @@
 {{ config(
     materialized='incremental',
-    incremental_strategy='append'
+    incremental_strategy='merge',
+    unique_key='cod_juego'
 ) }}
 
 with source as (
-
     select
         cod_juego,
         nombre,
@@ -14,15 +14,12 @@ with source as (
         fecha_start,
         fecha_end
     from {{ ref('stg_bronze__olympic_hosts_raw') }}
+),
 
-    {% if is_incremental() %}
-    where cod_juego not in (
-        select cod_juego
-        from {{ this }}
-    )
-    {% endif %}
-
+final as (
+    select *
+    from source
 )
 
 select *
-from source
+from final

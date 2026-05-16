@@ -1,14 +1,26 @@
-with 
+{{ config(
+    materialized='incremental',
+    unique_key='url',
+    incremental_strategy='merge'
+) }}
 
-source as (
+with source as (
 
-    select * from {{ source('bronze', 'olympic_athletes_raw') }}
+    select *
+    from {{ source('bronze', 'olympic_athletes_raw') }}
+
+    {% if is_incremental() %}
+    where athlete_url not in (
+        select url
+        from {{ this }}
+    )
+    {% endif %}
 
 ),
 
 renamed as (
 
-    select DISTINCT
+    select distinct
         trim(athlete_url) as url,
         trim(athlete_full_name) as nombre,
         try_to_number(games_participations) as juegos_participa,
@@ -20,7 +32,6 @@ renamed as (
             partition by trim(athlete_url)
             order by trim(athlete_full_name)
         ) as rn
-
     from source
 
 )
