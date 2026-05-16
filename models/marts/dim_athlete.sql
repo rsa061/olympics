@@ -5,7 +5,6 @@
 ) }}
 
 with source as (
-
     select
         url,
         nombre,
@@ -13,29 +12,14 @@ with source as (
         primer_juego,
         anio_nac,
         medallas,
-        bio,
-        _fivetran_deleted,
-        _fivetran_synced
+        bio
     from {{ ref('stg_bronze__olympic_athletes_raw') }}
+),
 
-    {% if is_incremental() %}
-    where url not in (
-        select url
-        from {{ this }}
-    )
-    or url in (
-        select url
-        from {{ this }}
-        where nombre is null
-           or juegos_participa is null
-           or primer_juego is null
-           or anio_nac is null
-           or medallas is null
-           or bio is null
-    )
-    {% endif %}
-
+final as (
+    select *
+    from source
 )
 
 select *
-from source
+from final
