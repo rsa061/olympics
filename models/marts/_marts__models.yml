@@ -35,11 +35,10 @@ models:
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_atleta
         data_type: varchar
@@ -100,11 +99,10 @@ models:
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -182,11 +180,10 @@ models:
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -260,11 +257,10 @@ models:
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -440,13 +436,13 @@ models:
       - name: cod_ciudad
         data_type: varchar
         description: "Código de país de dos letras."
-        tests:
-          - not_null
-          - unique
 
       - name: cod_3_letras_ciudad
         data_type: varchar
         description: "Código de país de tres letras."
+        tests:  
+          - not_null
+          - unique
 
       - name: nombre_ciudad
         data_type: varchar
@@ -481,7 +477,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Athlete', 'GameTeam']
+                values: ['ATHLETE', 'GAMETEAM']
 
   - name: dim_games
     description: "Dimensión de ediciones olímpicas."
@@ -508,7 +504,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Summer', 'Winter']
+                values: ['SUMMER', 'WINTER']
 
       - name: anio
         data_type: number

@@ -33,10 +33,6 @@ athlete_games as (
 final as (
     select
         ag.id_atleta,
-        a.nombre,
-        a.anio_nac,
-        a.bio,
-        a.primer_juego,
         count(distinct ag.id_juego) as games_participated,
         min(ag.anio) as first_year,
         max(ag.anio) as last_year,
