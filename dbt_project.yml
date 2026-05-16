@@ -42,9 +42,9 @@ models:
     staging:
       +materialized: view
       +schema: silver
-      +database: DEV_OLYMPICS_SILVER_DB
+      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_SILVER_DB"
       
     marts:
       +materialized: table
       +schema: gold
-      +database: DEV_OLYMPICS_GOLD_DB
+      +database: "{{ env_var('DBT_ENVIRONMENTS', 'FAIL') }}_OLYMPICS_GOLD_DB"
