@@ -31,7 +31,7 @@ events as (
 
 final as (
     select
-        r.id_resultado,
+        r.id_resultado
         g.cod_juego as id_juego,
         e.id_evento as id_evento,
         a.url as id_atleta,

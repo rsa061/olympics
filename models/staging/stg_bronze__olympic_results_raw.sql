@@ -1,6 +1,6 @@
 {{ config(
     materialized='incremental',
-    unique_key='id_result',
+    unique_key='id_resultado',
     incremental_strategy='merge'
 ) }}
 
@@ -45,7 +45,7 @@ renamed as (
             "trim(country_code)",
             "nullif(trim(athlete_url), '')",
             "try_to_number(rank_position)"
-        ]) }} as id_result,
+        ]) }} as id_resultado,
         trim(discipline_title) as disciplina,
         trim(event_title) as evento,
         trim(slug_game) as cod_juego,

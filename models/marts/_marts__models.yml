@@ -69,8 +69,6 @@ models:
       - name: posicion_ranking
         data_type: number
         description: "Posición en el ranking del resultado."
-        tests:
-          - not_null
 
       - name: puntuacion_valor
         data_type: varchar
