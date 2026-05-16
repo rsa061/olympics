@@ -55,7 +55,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Summer', 'Winter']
+                values: ['SUMMER', 'WINTER']
 
       - name: anio
         description: "Año de la edición olímpica."
@@ -83,7 +83,7 @@ models:
         tests:
           - accepted_values:
               arguments:
-                values: ['Athlete', 'GameTeam']
+                values: ['ATHLETE', 'GAMETEAM']
 
       - name: tipo_medalla
         description: "Tipo de medalla conseguida, si aplica."

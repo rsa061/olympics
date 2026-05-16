@@ -6,7 +6,10 @@ models:
     columns:
       - name: id_resultado
         data_type: varchar
-        description: "Clave primaria única del resultado (surrogate key compuesta por juego, evento y país)."
+        description: "Clave única del resultado."
+        tests:
+          - not_null
+          - unique
 
       - name: id_juego
         data_type: varchar
@@ -32,11 +35,10 @@ models:
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_atleta
         data_type: varchar
@@ -66,8 +68,6 @@ models:
       - name: posicion_ranking
         data_type: number
         description: "Posición en el ranking del resultado."
-        tests:
-          - not_null
 
       - name: puntuacion_valor
         data_type: varchar
@@ -91,16 +91,18 @@ models:
       - name: id_country_game
         data_type: varchar
         description: "Clave única del país en una edición olímpica."
+        tests:
+          - not_null
+          - unique
 
       - name: id_pais
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -170,16 +172,18 @@ models:
       - name: id_country_sport_game
         data_type: varchar
         description: "Clave única del país, disciplina y edición olímpica."
+        tests:
+          - not_null
+          - unique
 
       - name: id_pais
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -245,16 +249,18 @@ models:
       - name: id_host_country_game
         data_type: varchar
         description: "Clave única del país anfitrión en una edición olímpica."
+        tests:
+          - not_null
+          - unique
 
       - name: id_pais
         data_type: varchar
         description: "Referencia al país desde dim_country."
         tests:
-          - not_null
           - relationships:
               arguments:
                 to: ref('dim_country')
-                field: cod_ciudad
+                field: cod_3_letras_ciudad
 
       - name: id_juego
         data_type: varchar
@@ -321,6 +327,13 @@ models:
   - name: fct_athlete_career
     description: "Tabla de hechos agregada por atleta para estudiar trayectoria, longevidad competitiva y medallas acumuladas."
     columns:
+      - name: id_athlete_career
+        data_type: varchar
+        description: "Clave única de la carrera agregada del atleta."
+        tests:
+          - not_null
+          - unique
+
       - name: id_atleta
         data_type: varchar
         description: "Referencia al atleta desde dim_athlete."
@@ -423,13 +436,13 @@ models:
       - name: cod_ciudad
         data_type: varchar
         description: "Código de país de dos letras."
-        tests:
-          - not_null
-          - unique
 
       - name: cod_3_letras_ciudad
         data_type: varchar
         description: "Código de país de tres letras."
+        tests:  
+          - not_null
+          - unique
 
       - name: nombre_ciudad
         data_type: varchar
@@ -438,6 +451,13 @@ models:
   - name: dim_event
     description: "Dimensión de eventos."
     columns:
+      - name: id_evento
+        data_type: varchar
+        description: "Clave única del evento."
+        tests:
+          - not_null
+          - unique
+
       - name: disciplina
         data_type: varchar
         description: "Disciplina asociada al evento."
@@ -457,7 +477,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Athlete', 'GameTeam']
+                values: ['ATHLETE', 'GAMETEAM']
 
   - name: dim_games
     description: "Dimensión de ediciones olímpicas."
@@ -484,7 +504,7 @@ models:
           - not_null
           - accepted_values:
               arguments:
-                values: ['Summer', 'Winter']
+                values: ['SUMMER', 'WINTER']
 
       - name: anio
         data_type: number
