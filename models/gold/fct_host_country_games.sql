@@ -1,7 +1,3 @@
-{{ config(
-    materialized='table'
-) }}
-
 with base as (
     select
         fr.id_juego,
