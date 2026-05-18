@@ -1,7 +1,3 @@
-{{ config(
-    materialized='table'
-) }}
-
 with results as (
     select *
     from {{ ref('fct_results') }}

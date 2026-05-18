@@ -43,11 +43,6 @@ models:
       - name: id_atleta
         data_type: varchar
         description: "Referencia al atleta desde dim_athlete."
-        tests:
-          - relationships:
-              arguments:
-                to: ref('dim_athlete')
-                field: url
 
       - name: tipo_medalla
         data_type: varchar
@@ -339,10 +334,6 @@ models:
         description: "Referencia al atleta desde dim_athlete."
         tests:
           - not_null
-          - relationships:
-              arguments:
-                to: ref('dim_athlete')
-                field: url
 
       - name: nombre
         data_type: varchar

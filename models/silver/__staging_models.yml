@@ -1,0 +1,211 @@
+version: 2
+
+models:
+  - name: stg_athlete
+    description: "Tabla de staging que contiene la información básica de cada atleta procedente de la fuente. Se utiliza como punto de partida para construir dimensiones y hechos sobre atletas."
+    columns:
+      - name: id_atleta
+        data_type: varchar
+        description: "Identificador único del atleta en el sistema fuente. Se utiliza como clave para relacionar atletas con resultados y eventos."
+        tests:
+          - not_null
+          - unique
+
+      - name: url
+        data_type: varchar
+        description: "URL asociada al perfil o página oficial del atleta. Puede ser utilizada para enlaces o referencias externas."
+        tests:
+          - not_null
+
+      - name: nombre
+        data_type: varchar
+        description: "Nombre completo o nombre gráfico del atleta tal como aparece en los registros oficiales."
+        tests:
+          - not_null
+
+      - name: juegos_participa
+        data_type: varchar
+        description: "Número de los juegos Olímpicos en los que el atleta ha participado, en formato número."
+        tests:
+          - not_null
+
+      - name: primer_juego
+        data_type: varchar
+        description: "Nombre o código del primer juego Olímpico en el que el atleta compitió."
+
+      - name: anio_nac
+        data_type: number
+        description: "Año de nacimiento del atleta. Se utiliza para calcular rangos de edad o cohortes de participantes."
+
+      - name: medallas
+        data_type: varchar
+        description: "Resumen de las medallas obtenidas por el atleta, en formato de texto."
+
+      - name: bio
+        data_type: varchar
+        description: "Biografía o descripción breve del atleta, cuando está disponible en la fuente."
+
+  - name: stg_country
+    description: "Tabla de staging que contiene la información de países o ciudades asociadas a los juegos y resultados. Relaciona códigos y nombres oficiales."
+    columns:
+      - name: cod_3_letras_ciudad
+        data_type: varchar
+        description: "Código de tres letras que representa el país o ciudad (por ejemplo, un código ISO‑like). Se utiliza como clave para cruzar con otros datasets."
+        tests:
+          - not_null
+          - unique
+
+      - name: cod_ciudad
+        data_type: varchar
+        description: "Código alternativo o interno del país o ciudad en el sistema fuente. Se utiliza cuando existe más de un estándar de codificación."
+
+      - name: nombre_ciudad
+        data_type: varchar
+        description: "Nombre oficial de la ciudad o país en formato legible."
+        tests:
+          - not_null
+
+  - name: stg_events
+    description: "Tabla de staging que contiene la definición de cada evento deportivo dentro de los juegos Olímpicos, incluyendo disciplina y tipo de participación."
+    columns:
+      - name: id_evento
+        data_type: varchar
+        description: "Identificador único del evento deportivo dentro de los juegos. Se utiliza como clave para relacionar resultados con eventos específicos."
+        tests:
+          - not_null
+          - unique
+
+      - name: disciplina
+        data_type: varchar
+        description: "Nombre de la disciplina deportiva (por ejemplo, Atletismo, Natación, etc.)."
+        tests:
+          - not_null
+
+      - name: evento
+        data_type: varchar
+        description: "Nombre o descripción del evento concreto dentro de la disciplina (por ejemplo, 100 m masculino, salto de altura femenino, etc.)."
+        tests:
+          - not_null
+
+      - name: tipo_participante
+        data_type: varchar
+        description: "Tipo de participante admitido en el evento (por ejemplo, individual, por equipos, por parejas)."
+        tests:
+          - not_null
+
+  - name: stg_games
+    description: "Tabla de staging que contiene la información de cada edición de Juegos Olímpicos (Summer / Winter), con fecha, ciudad y estación."
+    columns:
+      - name: cod_juego
+        data_type: varchar
+        description: "Código único de la edición de Juegos Olímpicos (por ejemplo, LAU1984, SMO1992, etc.). Se utiliza como clave para relacionar juegos con resultados y eventos."
+        tests:
+          - not_null
+          - unique
+
+      - name: nombre
+        data_type: varchar
+        description: "Nombre comercial o descriptivo de la edición de los juegos (por ejemplo, 'Los Angeles 1984', 'Tokio 2020', etc.)."
+
+      - name: ciudad
+        data_type: varchar
+        description: "Ciudad en la que se celebraron los juegos. Se utiliza para agrupar por ciudad anfitriona."
+        tests:
+          - not_null
+
+      - name: estacion
+        data_type: varchar
+        description: "Estación o tipo de juegos (por ejemplo, Summer / Winter)."
+
+      - name: anio
+        data_type: number
+        description: "Año en el que se celebraron los juegos. Se utiliza para series temporales y agrupaciones por década."
+        tests:
+          - not_null
+
+      - name: fecha_start
+        data_type: timestamp_tz
+        description: "Fecha y hora de inicio de los juegos, con zona horaria. Se utiliza para cálculos temporales precisos."
+
+      - name: fecha_end
+        data_type: timestamp_tz
+        description: "Fecha y hora de finalización de los juegos, con zona horaria. Se utiliza para cálculos de duración y periodos."
+
+  - name: stg_results
+    description: "Tabla de staging que contiene los resultados individuales de cada atleta en cada evento y juego, incluyendo medallas y puntuaciones."
+    columns:
+      - name: id_resultado
+        data_type: varchar
+        description: "Identificador único del resultado (combinación de atleta, evento y juego). Se utiliza como clave para relacionar con otros hechos."
+        tests:
+          - not_null
+          - unique
+
+      - name: cod_juego
+        data_type: varchar
+        description: "Código del juego al que pertenece el resultado. Se utiliza para relacionar con la tabla de juegos."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_games')
+                field: cod_juego
+
+      - name: id_evento
+        data_type: varchar
+        description: "Identificador del evento deportivo asociado al resultado. Se utiliza para relacionar con la tabla de eventos."
+        tests:
+          - not_null
+          - relationships:
+              arguments:
+                to: ref('stg_events')
+                field: id_evento
+
+      - name: id_atleta
+        data_type: varchar
+        description: "Identificador del atleta que obtuvo el resultado. Se utiliza para relacionar con la tabla de atletas."
+        tests:
+          - not_null
+
+      - name: id_pais
+        data_type: varchar
+        description: "Identificador del país representado por el atleta en el resultado. Se utiliza para relacionar con la tabla de países o ciudades."
+        tests:
+          - not_null
+          - relationships:
+              arguments: 
+                to: ref('stg_country')
+                field: cod_3_letras_ciudad
+
+      - name: tipo_medalla
+        data_type: varchar
+        description: "Tipo de medalla obtenida (por ejemplo, Gold, Silver, Bronze, None)."
+
+      - name: puntuacion_valor
+        data_type: varchar
+        description: "Valor de la puntuación obtenida por el atleta en el evento, en formato texto o numérico mezclado (por ejemplo, tiempos, puntos, etc.)."
+
+      - name: puntuacion_tipo
+        data_type: varchar
+        description: "Tipo de puntuación (por ejemplo, time, points, jumps, etc.), que indica cómo debe interpretarse el campo puntuacion_valor."
+
+      - name: ranking_equal
+        data_type: boolean
+        description: "Indica si el ranking está empatado con otros participantes en el mismo resultado."
+
+      - name: posicion_ranking
+        data_type: number
+        description: "Posición final del atleta en el ranking del evento (por ejemplo, 1, 2, 3, etc.)."
+
+      - name: atletas
+        data_type: varchar
+        description: "Información adicional sobre los atletas participantes en el resultado, cuando se trata de equipos o parejas."
+
+      - name: tiene_medalla
+        data_type: number
+        description: "Indicador binario (0/1) que señala si el resultado incluye medalla (1) o no (0)."
+        tests:
+          - not_null
+          - accepted_values:
+              arguments: 
+                values: [0, 1]
