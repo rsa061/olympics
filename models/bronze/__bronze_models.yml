@@ -1,8 +1,8 @@
 version: 2
 
 models:
-  - name: stg_bronze__olympic_athletes_raw
-    description: "Modelo staging de atletas olímpicos a partir de la tabla raw."
+  - name: bronze__olympic_athletes
+    description: "Tabla limpia de atletas olímpicos a partir de la tabla raw."
     columns:
       - name: url
         description: "URL única del atleta en Olympics."
@@ -28,8 +28,8 @@ models:
       - name: bio
         description: "Biografía o descripción del atleta."
 
-  - name: stg_bronze__olympic_hosts_raw
-    description: "Modelo staging de sedes o ediciones olímpicas a partir de la tabla raw."
+  - name: bronze__olympic_hosts
+    description: "Tabla limpia de sedes o ediciones olímpicas a partir de la tabla raw."
     columns:
       - name: cod_juego
         description: "Código único de la edición olímpica, por ejemplo beijing-2022."
@@ -60,8 +60,8 @@ models:
       - name: anio
         description: "Año de la edición olímpica."
 
-  - name: stg_bronze__olympic_results_raw
-    description: "Modelo staging de resultados olímpicos a partir de la tabla raw."
+  - name: bronze__olympic_results
+    description: "Tabla limpia de resultados olímpicos a partir de la tabla raw."
     columns:
       - name: disciplina
         description: "Nombre de la disciplina deportiva."

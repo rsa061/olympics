@@ -5,7 +5,11 @@
 ) }}
 
 with source as (
-    select
+    select * from {{ ref('bronze__olympic_hosts') }}
+),
+
+final as (
+    select 
         cod_juego,
         nombre,
         ciudad,
@@ -13,11 +17,6 @@ with source as (
         anio,
         fecha_start,
         fecha_end
-    from {{ ref('stg_bronze__olympic_hosts_raw') }}
-),
-
-final as (
-    select *
     from source
 )
 
